@@ -31,9 +31,9 @@ def ___init___():
         for letter in line:
             if letter != "\n": pizza[i].append([letter, 0, False])
 
-        # print(pizza[i])
         i += 1
 
+    # See if a selection of pizza contains the required amount of tomato and mushroom
     def is_valid_piece(start_tile_row, start_tile_column, direction_right, distance):
         count_tomatoes = 0
         count_mushrooms = 0
@@ -64,6 +64,7 @@ def ___init___():
         else:
             return False
 
+    # Mark a selection of pizza as belonging to a slice
     def mark_piece(start_tile_row, start_tile_column, direction_right, length):
         nonlocal slice_counter
 
@@ -76,6 +77,7 @@ def ___init___():
 
         slice_counter += 1
 
+    # Traverse over the whole pizza to determine the smallest possible valid slices
     def find_smallest_pieces():
         for row in range(0, rows):
             for column in range(0, columns):
@@ -97,6 +99,7 @@ def ___init___():
                             mark_piece(row, column, True, l)
                             break
 
+    # Given a slice ID and starting coordinates, determine where does the slice end
     def find_bounds_of_slice(start_tile_row, start_tile_column, slice_id):
         bound_right = 0
         bound_bottom = 0
@@ -119,9 +122,11 @@ def ___init___():
 
         return [bound_bottom, bound_right]
 
+    # Calculate the area of the slice given the start of the slice and its bounds
     def calculate_slice_area(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right):
         return (slice_bound_right + 1 - start_tile_column) * (slice_bound_bottom + 1 - start_tile_row)
 
+    # Determine if the slice could be expanded to the up direction
     def explore_to_the_top(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right, slice_id):
         expandable_row_number = -1
         for i in range(start_tile_row - 1, -1, -1):
@@ -132,10 +137,10 @@ def ___init___():
                     row_expandable = False
                     break
 
-            if not row_expandable: break
+            if not row_expandable:
+                break
 
             if calculate_slice_area(i, start_tile_column, slice_bound_bottom, slice_bound_right) > max_slice_size:
-                row_expandable = False
                 break
 
             expandable_row_number = i
@@ -145,6 +150,7 @@ def ___init___():
         else:
             return expandable_row_number
 
+    # Determine if the slice could be expanded to the left direction
     def explore_to_the_left(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right, slice_id):
         expandable_column_number = -1
 
@@ -159,7 +165,6 @@ def ___init___():
             if not column_expandable: break
 
             if calculate_slice_area(start_tile_row, i, slice_bound_bottom, slice_bound_right) > max_slice_size:
-                column_expandable = False
                 break
 
             expandable_column_number = i
@@ -169,6 +174,7 @@ def ___init___():
         else:
             return expandable_column_number
 
+    # Determine if the slice could be expanded to the bottom direction
     def explore_to_the_bottom(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right, slice_id):
         expandable_row_number = -1
         for i in range(slice_bound_bottom + 1, rows):
@@ -182,7 +188,6 @@ def ___init___():
             if not row_expandable: break
 
             if calculate_slice_area(start_tile_row, start_tile_column, i, slice_bound_right) > max_slice_size:
-                row_expandable = False
                 break
 
             expandable_row_number = i
@@ -192,6 +197,7 @@ def ___init___():
         else:
             return expandable_row_number
 
+    # Determine if the slice could be expanded to the right direction
     def explore_to_the_right(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right, slice_id):
         expandable_column_number = -1
         for i in range(slice_bound_right + 1, columns):
@@ -204,7 +210,6 @@ def ___init___():
             if not column_expandable: break
 
             if calculate_slice_area(start_tile_row, start_tile_column, slice_bound_bottom, i) > max_slice_size:
-                column_expandable = False
                 break
 
             expandable_column_number = i
@@ -214,6 +219,7 @@ def ___init___():
         else:
             return expandable_column_number
 
+    # Expand a slice by including row(s) above.
     def expand_to_top(start_tile_row, start_tile_column, slice_id):
         bounds = find_bounds_of_slice(start_tile_row, start_tile_column, slice_id)
 
@@ -236,6 +242,7 @@ def ___init___():
         mark_slice_as_processed(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right)
         return False
 
+    # Expand a slice by including columns to the left.
     def expand_to_left(start_tile_row, start_tile_column, slice_id):
         bounds = find_bounds_of_slice(start_tile_row, start_tile_column, slice_id)
 
@@ -259,6 +266,7 @@ def ___init___():
         mark_slice_as_processed(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right)
         return False
 
+    # Expand a slice by including row(s) below.
     def expand_to_bottom(start_tile_row, start_tile_column, slice_id):
         bounds = find_bounds_of_slice(start_tile_row, start_tile_column, slice_id)
 
@@ -282,6 +290,7 @@ def ___init___():
         mark_slice_as_processed(start_tile_row, start_tile_column, slice_bound_bottom, slice_bound_right)
         return False
 
+    # Expand a slice by including columns to the left.
     def expand_to_right(start_tile_row, start_tile_column, slice_id):
         bounds = find_bounds_of_slice(start_tile_row, start_tile_column, slice_id)
 
@@ -311,6 +320,7 @@ def ___init___():
             for j in range(start_tile_column, end_tile_column + 1):
                 pizza[i][j][2] = True
 
+    # Reset the 'processed' status for the whole pizza
     def mark_pizza_ready():
         for i in range(0, rows):
             for j in range(0, columns):
@@ -321,31 +331,28 @@ def ___init___():
         for row in range(0, rows):
             for column in range(0, columns):
                 if pizza[row][column][2] == False and pizza[row][column][1] != 0:
-                    expand_to_left(row, column, pizza[row][column][1])
+                    expand_to_top(row, column, pizza[row][column][1])
+        mark_pizza_ready()
 
+        for row in range(0, rows):
+            for column in range(0, columns):
+                if pizza[row][column][2] == False and pizza[row][column][1] != 0:
+                    expand_to_left(row, column, pizza[row][column][1])
         mark_pizza_ready()
 
         for row in range(0, rows):
             for column in range(0, columns):
                 if pizza[row][column][2] == False and pizza[row][column][1] != 0:
                     expand_to_bottom(row, column, pizza[row][column][1])
-
         mark_pizza_ready()
 
         for row in range(0, rows):
             for column in range(0, columns):
                 if pizza[row][column][2] == False and pizza[row][column][1] != 0:
                     expand_to_right(row, column, pizza[row][column][1])
-
         mark_pizza_ready()
 
-        for row in range(0, rows):
-            for column in range(0, columns):
-                if pizza[row][column][2] == False and pizza[row][column][1] != 0:
-                    expand_to_top(row, column, pizza[row][column][1])
-
-        mark_pizza_ready()
-
+    # Create the final map of slices and their bounds
     def produce_output_dictionary():
         output_map = {}
         for i in range(0, rows):
@@ -368,11 +375,12 @@ def ___init___():
                                        output_dictionary[key][3]))
 
     def create_output_file(output_dictionary):
-        file = open("solution_d.out", "w")
+        file = open("solution2_d.out", "w")
 
         file.write(str(len(output_dictionary)) + "\n")
         for key in output_dictionary:
-            file.write("{} {} {} {}".format(output_dictionary[key][0], output_dictionary[key][1], output_dictionary[key][2],
+            file.write(
+                "{} {} {} {}".format(output_dictionary[key][0], output_dictionary[key][1], output_dictionary[key][2],
                                      output_dictionary[key][3]))
             file.write("\n")
 
