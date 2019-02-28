@@ -8,6 +8,7 @@ def __init__():
 
     def my_method():
         print("wassup")
+        print("ble")
 
     my_method()
 
