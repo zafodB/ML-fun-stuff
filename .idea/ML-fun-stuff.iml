@@ -6,7 +6,7 @@
     </content>
     <content url="file://$MODULE_DIR$/venv/qualification-round" />
     <content url="file://$MODULE_DIR$/venv/trial-round" />
-    <orderEntry type="jdk" jdkName="Python 3.7 (Hashcode)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (ML-fun-stuff)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">

@@ -12,4 +12,5 @@ def __init__():
 
     my_method()
 
+
 __init__()
